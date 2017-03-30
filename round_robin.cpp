@@ -4,12 +4,15 @@
 using namespace std;
 
 int main() {
+    int slice;
     Process p;
     ProcessQueue processes;
     ProcessQueue readyQ;
     int n;
     cout << "Enter Number of Processes: ";
     cin >> n;
+    cout << "Enter time slice: ";
+    cin >> slice;
     cout << endl;
     for(int i=1; i<=n; i++) {
         Process temp;
@@ -37,7 +40,6 @@ int main() {
             continue;
         }
 
-
         Process *top = readyQ.first();
         if(top->start + top->burst == time) {
             top = NULL;
@@ -49,6 +51,14 @@ int main() {
             } else {
                 cout << time << ":stopped\n";
             }
+        }
+        if(time % slice == 0 && time != 0 && readyQ.getSize() > 1) {
+            Process temp = readyQ.delQ();
+            temp.burst -= time - temp.start;
+            temp.start = -1;
+            readyQ.insertQ(temp);
+            readyQ.first()->start = time;
+            cout << time << ":P[" << readyQ.first()->pid << "]\n";
         }
 
         time ++;

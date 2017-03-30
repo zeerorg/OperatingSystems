@@ -7,14 +7,15 @@ struct Process {
     int pid;
     int arrival;
     int burst;
-    int start;
+    int start;          // Time executed = current time - start (if this process is executing)
     int waiting;
     int turnaround;
     int completed;
+    int priority;       // 1(highest) to 7(lowest)
 
     Process () {
-        pid = arrival = burst = waiting = turnaround = completed = 0;
-        start = -1;
+        pid = arrival = burst = waiting = turnaround = completed = priority = 0;
+        start = -1;  // Not started
     }
 };
 
@@ -38,6 +39,8 @@ struct ProcessQueue {
     }
 
     Process delQ() {
+        Process temp = q[front];      // Had A PRETTY NASTY ERROR!!
+                                    //Believe me you don't wanna know
         if(front == -1) {
             throw "Queue Empty";
         }
@@ -46,14 +49,7 @@ struct ProcessQueue {
         } else {
             front++;
         }
-        return q[front-1];
-    }
-
-    void displayQ() {
-        cout << "\nPID\t\tArrival\t\tBurst\t\tStart\t\tTurnaround\t\tWaiting\t\tCompleted\n";
-        for (int i=front; i<=rear; i++) {
-            cout << q[i].pid << "\t\t" << q[i].arrival << "\t\t" << q[i].burst << "\t\t" << q[i].start << "\t\t" << q[i].turnaround << "\t\t" << q[i].waiting << "\t\t" << q[i].completed << endl;
-        }
+        return temp;
     }
 
     bool isEmpty() {
@@ -62,5 +58,9 @@ struct ProcessQueue {
 
     Process* first(){
         return &q[front];
+    }
+
+    int getSize() {
+        return rear-front;
     }
 };
